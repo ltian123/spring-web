@@ -1,0 +1,113 @@
+事务支持
+	TransactionManager
+		jdbc/MyBatis
+			org.springframework.jdbc.datasource.DataSourceTransactionManager
+			dataSource->transactionManager
+
+		Hibernate
+			org.springframework.orm.hibernateX.HibernateTransactionManager
+			sessionFactory->transactionManager
+
+	事务属性
+		传播
+			propagation
+				REQUIRED
+					无	新建
+					有	加入
+
+				SUPPORTS
+					无	无
+					有	加入
+			
+		回滚条件
+			默认
+				RuntimeException以及子类 自动回滚
+
+			-异常类型		rollback-for="异常类型"
+			+异常类型		no-rollback-for="异常类型"
+
+		只读优化
+			readOnly		read-only="true"
+
+		隔离级别
+			isolation
+
+		超时
+			timeout
+
+
+
+static int TRANSACTION_NONE 
+          指示事务不受支持的常量。 
+
+static int TRANSACTION_READ_UNCOMMITTED 
+          指示可以发生脏读 (dirty read)、不可重复读和虚读 (phantom read) 的常量。 
+
+static int TRANSACTION_READ_COMMITTED 
+          指示不可以发生脏读的常量；不可重复读和虚读可以发生。 
+
+static int TRANSACTION_REPEATABLE_READ 
+          指示不可以发生脏读和不可重复读的常量；虚读可以发生。
+	  
+static int TRANSACTION_SERIALIZABLE 
+          指示不可以发生脏读、不可重复读和虚读的常量。 
+
+
+
+并发产生的错误
+	脏读
+		一个事务读取到另一个事务中未提交的数据
+
+	不可重复读
+		一个事务中进行多次读操作，读取到的数据不一致
+
+	幻读
+		一个事务中进行多次读操作，读取到的数据量不一致
+
+
+
+
+
+	product
+	id	name	num	version
+	1	aaa	0	88
+
+
+	1 aaa 1 87			1 aaa 1 87
+		87
+	      1-1
+	commit
+						88
+					throws Exception
+
+
+	avg
+
+	sum
+					insert
+					commit
+	count
+	avg=sum/count
+
+
+
+Web支持
+	实例化容器
+		在一个ServletContextListener监听器中实例化ac
+		将容器放入ServletContext区域
+			org.springframework.web.context.ContextLoaderListener
+	
+	默认配置文件位置
+		/WEB-INF/applicationContext.xml
+
+	自定义配置文件位置
+		<context-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>配置文件位置</param-value>
+		</context-param>
+
+	获得容器
+		ApplicationContext ac=WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+
+	从容器中获得Bean
+		Object getBean(String)
